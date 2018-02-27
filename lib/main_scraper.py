@@ -25,24 +25,16 @@ class MainScraper():
 
     def __getAsos(url):
         browser = webdriver.PhantomJS(MainScraper.__phantomJSpath)
-        # print(url)
         browser.get(url)
         time.sleep(5)
         soup = BeautifulSoup(browser.page_source, "html.parser")
-        # pattern = regex.compile('Out of stock')
         unavailable = soup.find('div', class_='out-of-stock')
         unavailable = unavailable.find('h3', {'data-bind': 'text:message'})
         if unavailable and regex.search('Out of stock', unavailable.string):
             return None
         elements = soup.find_all('span', {'class': 'current-price'})
-        # print(elements)
         price = elements[0].string
         price = regex.sub(r'[^\d\.,]', '', price)
-        # print(elements[0].string)
-        # element = browser.find_element_by_xpath("//span[@class = 'current-price']")
-        # a = browser.execute_script('priceText()')
-        # print(a)
-        # print(element.get_attribute('text'))
         browser.quit()
         return price
 
@@ -57,10 +49,6 @@ class MainScraper():
         if unavailable:
             return None
         element = soup.find('div', class_='pret_rons')
-        # try:
-        #     price = element.string
-        # except:
-        #     return None
         print(element)
         price = regex.search(r'_rons">([\d,\.]+) <span', str(element))
         try:
@@ -93,7 +81,6 @@ class MainScraper():
             price = mainPrice
         else:
             element = soup.find('a', {'href': code})
-            # pp.pprint(element.parent['class'])
             if element is None:
                 return None
             for prnt in element.parents:
@@ -102,14 +89,12 @@ class MainScraper():
                 except:
                     continue
                 if ('table-md' in prnt['class'] and 'wo-row' in prnt['class']):
-                    # pp.pprint(element.parent['class'])
                     for child in prnt.descendants:
                         try:
                             temp = child['class']
                         except:
                             continue
                         if 'product-new-price' in child['class']:
-                            # pp.pprint(str(child))
                             price = regex.search(r"(?iV1)[\d\.]+<sup>\d{2}",
                                                  str(child), regex.M).group()
         try:
@@ -147,7 +132,6 @@ class MainScraper():
         element = soup.find('form', {'name': code})
         price = element.find('span', itemprop='price')
         price = price['content']
-        # price = regex.sub('\.', '', price)
         pp.pprint(price)
         browser.quit()
         return price
@@ -259,38 +243,11 @@ class MainScraper():
 
 
 if __name__ == "__main__":
-    # product = dict(
-    #     name='test', 
-    #     link='https://www.emag.ro/telefon-mobil-huawei-p10-dual-sim-64gb-4g-mystic-silver-p10-silver/pd/DGKW57BBM/', 
-    #     # code='/phoneejl/5714/v'
-    # )
-    # product = dict(
-    #     name='test',
-    #     link='https://www.emag.ro/oneplus-3t-dual-sim-64gb-lte-4g-auriu-6gb-ram-a3010/pd/DZ38P7BBM/',
-    #     code='/quickmobile/79/v'
-    # )
-    # product = dict(
-    #     name='test',
-    #     link='https://www.mobiledirect.ro/husa-microsoft-surface-pro-4--2017----uag-handstrap-ice_iv2r2y2r2v2.html'
-    # )
-    # product = dict(
-    #     name='test',
-    #     link='https://www.amazon.de/Plugable-Universelle-Dockingstation-Videoausg%C3%A4ngen-Schnittstelle/dp/B00GQ3685Q/ref=sr_1_1?ie=UTF8&qid=1514727210&sr=8-1&keywords=plugable+ud-3900'
-    # )
-    # product = dict(
-    #     name='test',
-    #     link='https://www.quickmobile.ro/telefoane/telefoane-mobile/huawei-honor-6x-dual-sim-32gb-lte-4g-argintiu-3gb-ram-166398'
-    # )
-    # product = dict(
-    #     name='test',
-    #     link='https://www.dualstore.ro/home/1368-huawei-honor-7x-4g-volte-android-7-5-93-inch-octa-core-4gb-ram-64gb-rom-hisilicon-kirin-659-camera-dubla-amprenta-dualsim.html'
-    # )
     product = dict(
         name='test',
         link='http://www.asos.com/adidas-originals/adidas-originals-tubular-rise-trainers-in-black-by3554/prd/8265765?clr=black&SearchQuery=&cid=1935&gridcolumn=2&gridrow=1&gridsize=4&pge=1&pgesize=72&totalstyles=2268'
     )
     scraper = MainScraper(product)
-    # pp.pprint(scraper.name)
     try:
         scraper.scrape()
         scraper.show_scraper()

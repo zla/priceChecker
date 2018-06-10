@@ -1,12 +1,12 @@
 import pprint
-import sqlite3
+# import sqlite3
 from sqlite3 import dbapi2 as sqlite
 import time
 
 import numpy as np
 import pandas as pd
 import regex
-import sqlalchemy as sa
+# import sqlalchemy as sa
 from sqlalchemy import create_engine
 
 import lib.cfg as cfg
@@ -42,7 +42,7 @@ def insertPrice(prod, sesh, price):
 def getProducts(what):
     conn = dbConn()
     pDf = pd.read_sql(cfg.queries['%sProds' % what], conn)
-    pDf.set_index(keys='id', inplace=True)
+    pDf.set_index(keys='product_id', inplace=True)
     return pDf
     # result = conn.execute(cfg.queries['%sProds' % what])
     # products = []
@@ -52,6 +52,20 @@ def getProducts(what):
     #         p['code'] = prod[4]
     #     products.append(p)
     # return products
+
+
+def get_db_products():
+    conn = dbConn()
+    result = conn.execute(cfg.queries['activeProds'])
+    products = []
+    for prod in result.fetchall():
+        p = dict(id=prod[0], name=prod[1], link=prod[2], sheet=prod[3])
+        if prod[4]:
+            p['code'] = prod[4]
+        if prod[5]:
+            p['desc'] = prod[5]
+        products.append(p)
+    return products
 
 
 def getPrice(pid, sesh):
@@ -109,10 +123,10 @@ def dailyReport(df):
     # pp.pprint(prods)
     for p in lPctDiff.index:
         if lPctDiff.loc[p] <= -0.05:
-            n = prods.loc[p, 'name'] 
-            if prods.loc[p,'desc'] is not None:
+            n = prods.loc[p, 'name']
+            if prods.loc[p, 'desc'] is not None:
                 n += ' %s' % prods.loc[p, 'desc']
-            temp = cfg.prodTemplate % (p, n, prods.loc[p, 'url'], 
+            temp = cfg.prodTemplate % (p, n, prods.loc[p, 'url'],
                                        lPctDiff.loc[p] * 100,
                                        lPriceDiff.loc[p], last.loc[p],
                                        big.loc[p], small.loc[p], mean.loc[p])

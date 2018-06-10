@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block title_html %}
+  Stores {{ bloc.super }}
+{% endblock %}
+
+{% block h1 %}
+   {{ store.name }}
+{% endblock %}
+
+{% block page_content %}
+  <h5>
+      <a target="_blank" href="{{ store.url }}">Homepage</a>
+  </h5>
+  <h5>Currency: {{ store.currency }}</h5>
+  {% if active %}
+    <h4 style="color:green">
+      {{ act_count }} active product{{ act_count|pluralize }}
+    </h4>
+    <table>
+      {% for prod in active %}
+      <tr>
+        <td>{{ prod.product_id }}</td>
+        <td>
+          <a
+            title="{{ prod.name }}"
+            href="{% url 'viewer:prod' product_id=prod.product_id %}"
+          >
+            {{ prod.name|truncatechars:100 }}
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <h4>No active products.</h4>
+  {% endif %}
+
+  {% if inactive %}
+    <h4 style="color:red">
+      {{ inact_count }} inactive product{{ inact_count|pluralize }}
+    </h4>
+    <table>
+      {% for prod in inactive %}
+      <tr>
+        <td>{{ prod.product_id }}</td>
+        <td>
+          <a
+            title="{{ prod.name }}"
+            href="{% url 'viewer:prod' product_id=prod.product_id %}"
+          >
+            {{ prod.name|truncatechars:100 }}
+          </a>
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <h4>No inactive products.</h4>
+  {% endif %}
+{% endblock %}

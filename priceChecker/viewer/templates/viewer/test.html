@@ -1,0 +1,36 @@
+{{ form.media }}
+{% load widget_tweaks %}
+{% load i18n %}
+<script>function gettext(txt) { return txt }</script>
+<!-- <script>
+    var django = django || {};
+    django.jQuery = $;
+</script> -->
+<link rel="stylesheet" type="text/css" href="/static/admin/css/base.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/widgets.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/forms.css" />
+<link rel="stylesheet" type="text/css" href="/static/admin/css/global.css" />
+
+
+<form method="post" action="{% url 'viewer:test' %}">
+    {% csrf_token %}
+    <!-- This line inserts a CSRF token. -->
+    <!-- <table>
+        {{ form.as_table }} -->
+        <!-- This line displays lines of the form. -->
+    <!-- </table> -->
+    <div class="form-group">
+        {{ form.date.label_tag }} {% render_field form.date class="vDateField" %} {{ form.date.errors }}
+    </div>
+    <p>
+        <input type="submit" value="Create" />
+    </p>
+</form>
+
+
+<script>
+    var django = django || {};
+    django.jQuery = $;
+</script>
+<script type="text/javascript" src="/admin/jsi18n/"></script>
+{{ formset.media }}

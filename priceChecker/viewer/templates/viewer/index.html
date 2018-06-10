@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title_html %}
+    priceChecker
+{% endblock %}
+
+{% block h1 %}
+    {{ bloc.super }} Active products
+{% endblock %}
+
+{% block page_content %}
+  {% if active %}
+    <h4>
+      There are <span style="color:green">{{ count }}</span> active product{{ count|pluralize }}
+    </h4>
+    <table>
+      {% for prod in active %}
+        <tr>
+          <td style="color:green">{{ prod.product_id }}</td>
+          <td>
+              <a
+                href="{% url 'viewer:prod' product_id=prod.product_id %}"
+              >
+                {{ prod.name|truncatechars:100 }}
+              </a>
+                 &nbsp;({{ prod.store.name }})
+          </td>
+        </tr>
+        {% endfor %}
+    </table>
+  {% else %}
+    <p>No active products.</p>
+  {% endif %}
+{% endblock %}

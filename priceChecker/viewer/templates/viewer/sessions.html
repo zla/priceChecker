@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title_html %}
+   Sessions {{ bloc.super }}
+{% endblock %}
+
+{% block h1 %}
+   Sessions
+{% endblock %}
+
+{% block page_content %}
+  {% if sessions %}
+      <h4>
+        There are <span style="color:green">{{ count }}</span> saved session{{ count|pluralize }}
+      </h4>
+      <div style="overflow:hidden; height:475px; width:255px">
+        <div style="overflow:scroll; height:492px; width:272px">
+          <table>
+            <tr>
+              <th>ID</th>
+              <th>Date</th>
+              <th>Description</th>
+            </tr>
+            {% for s in sessions %}
+              <tr>
+                <td>{{ s.session_id }}</td>
+                <td><strong>{{ s.date|date:'d/m/Y' }}</strong></td>
+                <td>{{ s.price__count }} prices recorded</td>
+              </tr>
+            {% endfor %}
+          </table>
+        </div>
+      </div>
+  {% else %}
+    <h4>No sessions.</h4>
+  {% endif %}
+{% endblock %}

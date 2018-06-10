@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title_html %}
+  Inactive products {{ bloc.super }}
+{% endblock %}
+
+{% block h1 %}
+  Inactive products
+{% endblock %}
+
+{% block page_content %}
+  {% if inactive %}
+    <h4>
+      There are <span style="color:red">{{ count }}</span> inactive product{{ count|pluralize }}
+    </h4>
+    <table>
+      {% for prod in inactive %}
+      <tr>
+        <td style="color:red">{{ prod.product_id }}</td>
+        <td>
+          <a
+            title="{{ prod.name }}"
+            href="{% url 'viewer:prod' product_id=prod.product_id %}"
+          >
+            {{ prod.name|truncatechars:100 }}
+          </a>
+          &nbsp;({{ prod.store.name }})
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <h4>No inactive products.</h4>
+  {% endif %}
+{% endblock %}

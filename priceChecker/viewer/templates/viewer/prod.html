@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title_html %}
+  {{ prod.name }} - priceChecker
+{% endblock %}
+
+{% block h1 %}
+  {{ prod.name }}
+{% endblock %}
+
+{% block page_content %}
+  <div class="container" id="prod-summary">
+    <h5>
+      <a target="_blank" href="{{ prod.url }}">View in store</a>
+    </h5>
+    <h5>ID: {{ prod.product_id }}</h5>
+
+    {% if prod.active %}
+      <h5>Status:
+        <span style="color:green">active</span>
+      </h5>
+    {% else %}
+      <h5>Status:
+        <span style="color:red">inactive</span>
+      </h5>
+    {% endif %}
+
+    <h5>Store:
+      <a href="{% url 'viewer:store' store_id=prod.store_id %}">{{ prod.store.name }}</a>
+    </h5>
+  </div>
+
+  {% if prices %}
+    <div class="container" id="price-summary">
+      <h5>Recorded in {{ prices_count }} session{{ prices_count|pluralize }} (null values are not displayed in the table).
+        <br>
+        Last price recorded on {{ prices.0.session.date|date:'d/m/Y' }}.
+      </h5>
+    </div>
+
+    <div class="container" id="price-graph">
+      <img class="img-fluid" src="{% url 'viewer:prices_fig' product_id=prod.product_id %}"></img>
+    </div>
+
+    <div class="container" id="price-table">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <th scope="col">Date</th>
+            <th scope="col">Amount</th>
+            <th scope="col">Currency</th>
+          </tr>
+        </thead>
+        {% for price in prices %}
+          {% if price.amount %}
+            <tr>
+              <td>{{ price.session.date|date:'d/m/Y' }}</td>
+              <td>{{ price.amount }}</td>
+              <td>{{ prod.store.currency }}</td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </table>
+    </div>
+  {% else %}
+    <h5>No recorded prices.</h5>
+  {% endif %}
+{% endblock page_content %}

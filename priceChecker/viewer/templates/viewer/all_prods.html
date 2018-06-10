@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title_html %}
+  All products {{ bloc.super }}
+{% endblock %}
+
+{% block h1 %}
+  All products
+{% endblock %}
+
+{% block page_content %}
+  <h4>{{ ac_cnt|add:in_cnt }} recorded product{{ ac_cnt|add:in_cnt|pluralize }}</h4>
+  {% if active %}
+    <h4 style="color:green">
+      Active product{{ ac_cnt|pluralize }} ({{ ac_cnt }})
+    </h4>
+    <table>
+      {% for prod in active %}
+      <tr>
+        <td style="color:green">{{ prod.product_id }}</td>
+        <td>
+          <a
+            title="{{ prod.name }}"
+            href="{% url 'viewer:prod' product_id=prod.product_id %}"
+          >
+            {{ prod.name|truncatechars:100 }}
+          </a>
+          &nbsp;({{ prod.store.name }})
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <h4>No active products.</h4>
+  {% endif %}
+
+  {% if inactive %}
+    <h4 style="color:red">
+      Inactive product{{ in_cnt|pluralize }} ({{ in_cnt }})
+    </h4>
+    <table>
+      {% for prod in inactive %}
+      <tr>
+        <td style="color:red">{{ prod.product_id }}</td>
+        <td>
+          <a
+            title="{{ prod.name }}"
+            href="{% url 'viewer:prod' product_id=prod.product_id %}"
+          >
+            {{ prod.name|truncatechars:100 }}
+          </a>
+          &nbsp;({{ prod.store.name }})
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  {% else %}
+    <h4>No inactive products.</h4>
+  {% endif %}
+{% endblock %}
